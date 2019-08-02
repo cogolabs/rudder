@@ -22,12 +22,7 @@ type Config struct {
 
 // Load loads in all configurations from a file
 func Load() (*Config, error) {
-	f, err := os.Open(configName)
-	if err != nil {
-		return nil, err
-	}
-	cfg := new(Config)
-	err = yaml.NewDecoder(f).Decode(&cfg)
+	cfg, err := readYAML()
 	if err != nil {
 		return nil, err
 	}
@@ -41,6 +36,20 @@ func Load() (*Config, error) {
 			return nil, err
 		}
 		cfg.Deployments[i] = *processed
+	}
+
+	return cfg, nil
+}
+
+func readYAML() (*Config, error) {
+	f, err := os.Open(configName)
+	if err != nil {
+		return nil, err
+	}
+	cfg := new(Config)
+	err = yaml.NewDecoder(f).Decode(&cfg)
+	if err != nil {
+		return nil, err
 	}
 
 	return cfg, nil
