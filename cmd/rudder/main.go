@@ -33,7 +33,7 @@ func main() {
 			fmt.Printf("%s does not have its requirements met, skipping...\n", dply.Name)
 			continue
 		}
-		for i, _ := range dply.KubeServers {
+		for i := range dply.KubeServers {
 			err = dply.MakeKubesConfig(*kubeConfig, i)
 			die(err)
 			fmt.Printf("Deploying %s to %s on %s\n", dply.Name, dply.KubeNamespace, dply.KubeServers[i])
