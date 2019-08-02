@@ -10,3 +10,10 @@
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# Ignore compiled binary
+rudder
+cmd/rudder/rudder
+
+# Ignore test configuration
+.rudder.yml

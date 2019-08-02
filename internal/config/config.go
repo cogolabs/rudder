@@ -17,7 +17,7 @@ type Config struct {
 	DockerImage      string        `yaml:"docker_image"`
 	DockerTimeout    time.Duration `yaml:"-"`
 	DockerTimeoutStr string        `yaml:"docker_timeout"`
-	Deployments      []*Deployment `yaml:"deployments"`
+	Deployments      []Deployment  `yaml:"deployments"`
 }
 
 // Load loads in all configurations from a file
@@ -31,25 +31,35 @@ func Load() (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	err = cfg.process()
+	if err != nil {
+		return nil, err
+	}
+	for i, dply := range cfg.Deployments {
+		processed, err := dply.process(i)
+		if err != nil {
+			return nil, err
+		}
+		cfg.Deployments[i] = *processed
+	}
+
+	return cfg, nil
+}
+
+func (cfg *Config) process() error {
 	if cfg.DockerImage == "" {
-		return nil, &ErrMissingField{"docker_image"}
+		return &ErrMissingField{"docker_image"}
 	}
 	if cfg.DockerTimeoutStr == "" {
 		cfg.DockerTimeout = defaultTimeout
 	} else {
 		timeout, err := time.ParseDuration(cfg.DockerTimeoutStr)
 		if err != nil {
-			return nil, err
+			return err
 		}
 		cfg.DockerTimeoutStr = ""
 		cfg.DockerTimeout = timeout
 	}
-	for i, dply := range cfg.Deployments {
-		err := dply.process(i)
-		if err != nil {
-			return nil, err
-		}
-	}
 
-	return cfg, nil
+	return nil
 }

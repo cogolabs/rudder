@@ -24,9 +24,9 @@ type Deployment struct {
 	KubeDeployments []string `yaml:"kube_deployments"`
 }
 
-func (dply *Deployment) process(n int) error {
+func (dply *Deployment) process(n int) (*Deployment, error) {
 	if dply.Name == "" {
-		return &ErrMissingField{fmt.Sprintf("deployments[%d].name", n)}
+		return nil, &ErrMissingField{fmt.Sprintf("deployments[%d].name", n)}
 	}
 	if dply.Branch == "" {
 		dply.Branch = defaultBranch
@@ -36,13 +36,13 @@ func (dply *Deployment) process(n int) error {
 		dply.YAMLFolder = defaultYAMLFolder
 	}
 	if len(dply.KubeServers) == 0 {
-		return &ErrMissingField{fmt.Sprintf("deployments[%d].kube_servers", n)}
+		return nil, &ErrMissingField{fmt.Sprintf("deployments[%d].kube_servers", n)}
 	}
 	if dply.KubeNamespace == "" {
 		dply.KubeNamespace = defaultNamespace
 	}
 
-	return nil
+	return dply, nil
 }
 
 func (dply *Deployment) tagRegex() {

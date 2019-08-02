@@ -6,7 +6,7 @@ var (
 	testConfig = Config{
 		DockerImage:   "registry.test.net/org/repo",
 		DockerTimeout: 2 * time.Minute,
-		Deployments: []*Deployment{
+		Deployments: []Deployment{
 			{
 				Name:            "prod",
 				Branch:          "master",
