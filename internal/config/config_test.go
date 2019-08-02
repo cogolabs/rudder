@@ -1,21 +1,39 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"testing"
 
+	"github.com/ryantking/rudder/internal/kubes"
 	"github.com/ryantking/rudder/internal/testutil"
 	"github.com/stretchr/testify/suite"
+	"gopkg.in/yaml.v2"
+)
+
+const (
+	testDir   = "kube"
+	testToken = "mykubestoken"
 )
 
 type ConfigTestSuite struct {
 	suite.Suite
 }
 
+func (suite *ConfigTestSuite) SetupSuite() {
+	os.Setenv(tokenVar, testToken)
+}
+
+func (suite *ConfigTestSuite) TearDownSuite() {
+	os.Unsetenv(tokenVar)
+}
+
 func (suite *ConfigTestSuite) TearDownTest() {
 	require := suite.Require()
 
 	err := os.RemoveAll(configName)
+	require.NoError(err)
+	err = os.RemoveAll(testDir)
 	require.NoError(err)
 }
 
@@ -107,6 +125,24 @@ func (suite *ConfigTestSuite) TestLoadMissingKubeServers() {
 	require.NoError(err)
 	_, err = Load()
 	require.EqualError(err, "required field missing: deployments[1].kube_servers")
+}
+
+func (suite *ConfigTestSuite) TestMakeConfig() {
+	assert := suite.Assert()
+	require := suite.Require()
+
+	dply := Deployment{KubeServers: []string{"kubes.server.net"}, KubeNamespace: "myproj"}
+	err := dply.MakeKubesConfig(testDir, 0)
+	require.NoError(err)
+
+	f, err := os.Open(fmt.Sprintf("%s/%s", testDir, kubesConfig))
+	require.NoError(err)
+	cfg := new(kubes.Config)
+	err = yaml.NewDecoder(f).Decode(cfg)
+	require.NoError(err)
+	assert.Equal(testToken, cfg.Users[0].User.Token)
+	assert.Equal(dply.KubeServers[0], cfg.Clusters[0].Cluster.Server)
+	assert.Equal(dply.KubeNamespace, cfg.Contexts[0].Context.Namespace)
 }
 
 func TestConfigTestSuite(t *testing.T) {

@@ -1,18 +1,5 @@
 package kubes
 
-import (
-	"fmt"
-	"os"
-
-	"github.com/ryantking/rudder/internal/config"
-	"gopkg.in/yaml.v2"
-)
-
-const (
-	tokenVar   = "KUBE_TOKEN"
-	configName = "config"
-)
-
 // Config is the Kubernetes config
 type Config struct {
 	APIVersion     string            `yaml:"apiVersion"`
@@ -50,7 +37,8 @@ type User struct {
 	} `yaml:"user"`
 }
 
-var defaultConfig = Config{
+// DefaultConfig is the default kubernetes configuration to be populated
+var DefaultConfig = Config{
 	APIVersion:     "v1",
 	Clusters:       []Cluster{{Name: "cluster"}},
 	Contexts:       []Context{{Name: "cluster"}},
@@ -58,26 +46,4 @@ var defaultConfig = Config{
 	Kind:           "config",
 	Preferences:    make(map[string]string),
 	Users:          []User{{Name: "default"}},
-}
-
-// MakeConfig makes a configuration for a deployment
-func MakeConfig(configDir string, dply config.Deployment, serverIndex int) error {
-	config := defaultConfig
-	config.Clusters[0].Cluster.Server = dply.KubeServers[serverIndex]
-	config.Contexts[0].Context.Cluster = config.Clusters[0].Name
-	config.Contexts[0].Context.Namespace = dply.KubeNamespace
-	config.Contexts[0].Context.User = config.Users[0].Name
-	config.Users[0].User.Token = os.Getenv(tokenVar)
-
-	err := os.MkdirAll(configDir, os.ModePerm)
-	if err != nil {
-		return err
-	}
-
-	f, err := os.Create(fmt.Sprintf("%s/%s", configDir, configName))
-	if err != nil {
-		return err
-	}
-
-	return yaml.NewEncoder(f).Encode(&config)
 }
