@@ -19,6 +19,7 @@ type Config struct {
 	DockerImage      string        `yaml:"docker_image"`
 	DockerTimeout    time.Duration `yaml:"-"`
 	DockerTimeoutStr string        `yaml:"docker_timeout"`
+	User             User          `yaml:"user"`
 	Deployments      []Deployment  `yaml:"deployments"`
 }
 
@@ -32,6 +33,8 @@ func Load() (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+	user := cfg.User.process()
+	cfg.User = *user
 	for i, dply := range cfg.Deployments {
 		processed, err := dply.process(i)
 		if err != nil {

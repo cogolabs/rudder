@@ -15,7 +15,8 @@ type Config struct {
 type Cluster struct {
 	Name    string `yaml:"name"`
 	Cluster struct {
-		Server string `yaml:"server"`
+		Server               string `yaml:"server"`
+		CertificateAuthority string `yaml:"certificate-authority"`
 	} `yaml:"cluster"`
 }
 
@@ -33,7 +34,9 @@ type Context struct {
 type User struct {
 	Name string `yaml:"name"`
 	User struct {
-		Token string `yaml:"token"`
+		Token             string `yaml:"token"`
+		ClientCertificate string `yaml:"client-certificate"`
+		ClientKey         string `yaml:"client-key"`
 	} `yaml:"user"`
 }
 

@@ -1,5 +1,6 @@
 docker_registry: "https://registry.server.net"
 docker_image: "org/repo"
+docker_timeout: "2m"
 deployments:
   - name: prod
     only_tags: true
@@ -8,7 +9,7 @@ deployments:
       - "v*"
     kube_servers:
       - server: "mykubes1.test.net"
-      - server: "mykubes2.test.net"
+      - ca: "myca.crt"
     kube_namespace: "myproject"
     kube_deployments:
       - "deployment/myapi"
@@ -20,7 +21,7 @@ deployments:
       - "multi-v*"
       - "canary-v*"
     kube_servers:
-      - server: "mykubes1.test.net"
+      - ca: "mykubes1.test.net"
       - server: "mykubes2.test.net"
     kube_namespace: "myproject"
     kube_deployments:

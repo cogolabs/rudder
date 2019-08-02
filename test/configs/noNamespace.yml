@@ -8,8 +8,8 @@ deployments:
       - "multi-v*"
       - "v*"
     kube_servers:
-      - "mykubes1.test.net"
-      - "mykubes2.test.net"
+      - server: "mykubes1.test.net"
+      - server: "mykubes2.test.net"
     kube_deployments:
       - "deployment/myapi"
       - "statefulset/myworker"
@@ -20,8 +20,8 @@ deployments:
       - "multi-v*"
       - "canary-v*"
     kube_servers:
-      - "mykubes1.test.net"
-      - "mykubes2.test.net"
+      - server: "mykubes1.test.net"
+      - server: "mykubes2.test.net"
     kube_namespace: "myproject"
     kube_deployments:
       - "deployment/myapi-canary"
@@ -29,7 +29,7 @@ deployments:
   - name: staging
     yaml_folder: "k8s-staging"
     kube_servers:
-      - "mykubes3.test.net"
+      - server: "mykubes3.test.net"
     kube_namespace: "myproject"
     kube_deployments:
       - "deployment/myapi"

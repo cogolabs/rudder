@@ -20,14 +20,6 @@ type ConfigTestSuite struct {
 	suite.Suite
 }
 
-func (suite *ConfigTestSuite) SetupSuite() {
-	os.Setenv(tokenVar, testToken)
-}
-
-func (suite *ConfigTestSuite) TearDownSuite() {
-	os.Unsetenv(tokenVar)
-}
-
 func (suite *ConfigTestSuite) TearDownTest() {
 	require := suite.Require()
 
@@ -127,12 +119,21 @@ func (suite *ConfigTestSuite) TestLoadMissingKubeServers() {
 	require.EqualError(err, "required field missing: deployments[1].kube_servers")
 }
 
+func (suite *ConfigTestSuite) TestLoadMissingKubeServerEndpoint() {
+	require := suite.Require()
+
+	err := testutil.WriteConfig("../../test/configs/missingServerEndpoint.yml")
+	require.NoError(err)
+	_, err = Load()
+	require.EqualError(err, "required field missing: deployments[0].kube_servers[1].server")
+}
+
 func (suite *ConfigTestSuite) TestMakeConfig() {
 	assert := suite.Assert()
 	require := suite.Require()
 
-	dply := Deployment{KubeServers: []string{"kubes.server.net"}, KubeNamespace: "myproj"}
-	err := dply.MakeKubesConfig(testConfigPath, 0)
+	dply := Deployment{KubeServers: []KubeServer{{Server: "kubes.server.net"}}, KubeNamespace: "myproj"}
+	err := dply.MakeKubesConfig(&User{Token: testToken}, testConfigPath, 0)
 	require.NoError(err)
 
 	f, err := os.Open(testConfigPath)
@@ -141,7 +142,7 @@ func (suite *ConfigTestSuite) TestMakeConfig() {
 	err = yaml.NewDecoder(f).Decode(cfg)
 	require.NoError(err)
 	assert.Equal(testToken, cfg.Users[0].User.Token)
-	assert.Equal(dply.KubeServers[0], cfg.Clusters[0].Cluster.Server)
+	assert.Equal(dply.KubeServers[0].Server, cfg.Clusters[0].Cluster.Server)
 	assert.Equal(dply.KubeNamespace, cfg.Contexts[0].Context.Namespace)
 }
 
