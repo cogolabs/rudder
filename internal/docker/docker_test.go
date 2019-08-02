@@ -67,7 +67,7 @@ func (suite *DockerTestSuite) TestCheckImageRegistryError() {
 
 	ready, err := checkImage(&testConfig, testTag)
 	url := fmt.Sprintf("%s/v1/repositories/%s/tags/%s", testConfig.DockerRegistry, testConfig.DockerImage, testTag)
-	require.EqualError(err, fmt.Sprintf("recieved code 500 from '%s'", url))
+	require.EqualError(err, fmt.Sprintf("received code 500 from '%s'", url))
 	assert.False(ready)
 }
 
@@ -106,7 +106,7 @@ func (suite *DockerTestSuite) TestWaitForImageError() {
 
 	err := WaitForImage(&testConfig, testTag)
 	url := fmt.Sprintf("%s/v1/repositories/%s/tags/%s", testConfig.DockerRegistry, testConfig.DockerImage, testTag)
-	require.EqualError(err, fmt.Sprintf("recieved code 500 from '%s'", url))
+	require.EqualError(err, fmt.Sprintf("received code 500 from '%s'", url))
 }
 
 func TestDockerTestSuite(t *testing.T) {

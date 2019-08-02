@@ -18,5 +18,5 @@ type ErrBadDockerResponse struct {
 }
 
 func (err *ErrBadDockerResponse) Error() string {
-	return fmt.Sprintf("recieved code %d from '%s'", err.statusCode, err.url)
+	return fmt.Sprintf("received code %d from '%s'", err.statusCode, err.url)
 }
