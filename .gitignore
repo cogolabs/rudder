@@ -13,6 +13,7 @@
 
 # Ignore compiled binary
 ./rudder
+./cmd/rudder/rudder
 
 # Ignore test configuration
 .rudder.yml
