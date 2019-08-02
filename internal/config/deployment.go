@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/ryantking/rudder/internal/kubes"
@@ -14,8 +15,7 @@ const (
 	defaultYAMLFolder = "k8s"
 	defaultNamespace  = "default"
 
-	tokenVar    = "KUBE_TOKEN"
-	kubesConfig = "config"
+	tokenVar = "KUBE_TOKEN"
 )
 
 // Deployment holds the configuration info for a specific deployment
@@ -68,7 +68,7 @@ func (dply *Deployment) tagRegex() {
 }
 
 // MakeKubesConfig makes the kubes config
-func (dply *Deployment) MakeKubesConfig(configDir string, server int) error {
+func (dply *Deployment) MakeKubesConfig(configPath string, server int) error {
 	config := kubes.DefaultConfig
 	config.Clusters[0].Cluster.Server = dply.KubeServers[server]
 	config.Contexts[0].Context.Cluster = config.Clusters[0].Name
@@ -76,12 +76,14 @@ func (dply *Deployment) MakeKubesConfig(configDir string, server int) error {
 	config.Contexts[0].Context.User = config.Users[0].Name
 	config.Users[0].User.Token = os.Getenv(tokenVar)
 
+	configPath = os.ExpandEnv(configPath)
+	configDir := filepath.Dir(configPath)
 	err := os.MkdirAll(configDir, os.ModePerm)
 	if err != nil {
 		return err
 	}
 
-	f, err := os.Create(fmt.Sprintf("%s/%s", configDir, kubesConfig))
+	f, err := os.Create(configPath)
 	if err != nil {
 		return err
 	}

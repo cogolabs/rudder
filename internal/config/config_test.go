@@ -1,8 +1,8 @@
 package config
 
 import (
-	"fmt"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/ryantking/rudder/internal/kubes"
@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	testDir   = "kube"
-	testToken = "mykubestoken"
+	testConfigPath = "kube/config"
+	testToken      = "mykubestoken"
 )
 
 type ConfigTestSuite struct {
@@ -33,7 +33,7 @@ func (suite *ConfigTestSuite) TearDownTest() {
 
 	err := os.RemoveAll(configName)
 	require.NoError(err)
-	err = os.RemoveAll(testDir)
+	err = os.RemoveAll(filepath.Dir(testConfigPath))
 	require.NoError(err)
 }
 
@@ -132,10 +132,10 @@ func (suite *ConfigTestSuite) TestMakeConfig() {
 	require := suite.Require()
 
 	dply := Deployment{KubeServers: []string{"kubes.server.net"}, KubeNamespace: "myproj"}
-	err := dply.MakeKubesConfig(testDir, 0)
+	err := dply.MakeKubesConfig(testConfigPath, 0)
 	require.NoError(err)
 
-	f, err := os.Open(fmt.Sprintf("%s/%s", testDir, kubesConfig))
+	f, err := os.Open(testConfigPath)
 	require.NoError(err)
 	cfg := new(kubes.Config)
 	err = yaml.NewDecoder(f).Decode(cfg)
