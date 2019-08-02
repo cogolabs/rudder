@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/ryantking/rudder/internal/kubes"
@@ -24,11 +25,12 @@ type Deployment struct {
 	Branch          string   `yaml:"branch"`
 	OnlyTags        bool     `yaml:"only_tags"`
 	Tags            []string `yaml:"tags"`
-	TagsRegex       string   `yaml:"-"`
 	YAMLFolder      string   `yaml:"yaml_folder"`
 	KubeServers     []string `yaml:"kube_servers"`
 	KubeNamespace   string   `yaml:"kube_namespace"`
 	KubeDeployments []string `yaml:"kube_deployments"`
+
+	tagsRegex string
 }
 
 func (dply *Deployment) process(n int) (*Deployment, error) {
@@ -38,7 +40,6 @@ func (dply *Deployment) process(n int) (*Deployment, error) {
 	if dply.Branch == "" {
 		dply.Branch = defaultBranch
 	}
-	dply.tagRegex()
 	if dply.YAMLFolder == "" {
 		dply.YAMLFolder = defaultYAMLFolder
 	}
@@ -48,23 +49,22 @@ func (dply *Deployment) process(n int) (*Deployment, error) {
 	if dply.KubeNamespace == "" {
 		dply.KubeNamespace = defaultNamespace
 	}
+	if len(dply.Tags) > 0 {
+		dply.genTagRegex()
+	}
 
 	return dply, nil
 }
 
-func (dply *Deployment) tagRegex() {
-	if len(dply.Tags) == 0 {
-		return
-	}
-
+func (dply *Deployment) genTagRegex() {
 	for i, tag := range dply.Tags {
 		if i == 0 {
-			dply.TagsRegex = fmt.Sprintf("^(%s)", strings.Replace(tag, "*", ".*", -1))
+			dply.tagsRegex = fmt.Sprintf("^(%s)", strings.Replace(tag, "*", ".*", -1))
 		} else {
-			dply.TagsRegex = fmt.Sprintf("%s|(%s)", dply.TagsRegex, strings.Replace(tag, "*", ".*", -1))
+			dply.tagsRegex = fmt.Sprintf("%s|(%s)", dply.tagsRegex, strings.Replace(tag, "*", ".*", -1))
 		}
 	}
-	dply.TagsRegex = fmt.Sprintf("%s$", dply.TagsRegex)
+	dply.tagsRegex = fmt.Sprintf("%s$", dply.tagsRegex)
 }
 
 // MakeKubesConfig makes the kubes config
@@ -89,4 +89,22 @@ func (dply *Deployment) MakeKubesConfig(configPath string, server int) error {
 	}
 
 	return yaml.NewEncoder(f).Encode(&config)
+}
+
+// ShouldDeploy returns whether or not the deployments criteria are met
+func (dply *Deployment) ShouldDeploy(branch, tag string) bool {
+	if dply.Branch != branch {
+		return false
+	}
+	if dply.OnlyTags && tag == "" {
+		return false
+	}
+	if dply.tagsRegex != "" {
+		r := regexp.MustCompile(dply.tagsRegex)
+		if !r.MatchString(tag) {
+			return false
+		}
+	}
+
+	return true
 }

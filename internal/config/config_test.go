@@ -145,6 +145,27 @@ func (suite *ConfigTestSuite) TestMakeConfig() {
 	assert.Equal(dply.KubeNamespace, cfg.Contexts[0].Context.Namespace)
 }
 
+func (suite *ConfigTestSuite) TestShouldDeploy() {
+	assert := suite.Assert()
+	tests := []struct {
+		dply         *Deployment
+		branch       string
+		tag          string
+		shouldDeploy bool
+	}{
+		{&Deployment{Branch: "master"}, "master", "", true},
+		{&Deployment{Branch: "master"}, "dev", "", false},
+		{&Deployment{Branch: "master", OnlyTags: true}, "master", "", false},
+		{&Deployment{Branch: "master", OnlyTags: true, tagsRegex: "^(multi-v.*)$"}, "master", "multi-v0.1", true},
+		{&Deployment{Branch: "master", OnlyTags: true, tagsRegex: "^(multi-v.*)$"}, "master", "canary-v0.1", false},
+	}
+
+	for _, tt := range tests {
+		shouldDeploy := tt.dply.ShouldDeploy(tt.branch, tt.tag)
+		assert.Equal(tt.shouldDeploy, shouldDeploy)
+	}
+}
+
 func TestConfigTestSuite(t *testing.T) {
 	tests := new(ConfigTestSuite)
 	suite.Run(t, tests)

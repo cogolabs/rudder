@@ -15,8 +15,9 @@ const (
 )
 
 var (
-	branch = flag.String("branch", "", "Current branch")
-	tag    = flag.String("tag", "", "Current tag")
+	branch     = flag.String("branch", "", "Current branch")
+	tag        = flag.String("tag", "", "Current tag")
+	kubeConfig = flag.String("kube-config", "$HOME/.kube/config", "Location of kube config")
 )
 
 func main() {
@@ -25,6 +26,25 @@ func main() {
 	die(err)
 	err = docker.WaitForImage(cfg, *tag)
 	die(err)
+
+	for _, dply := range cfg.Deployments {
+		if !dply.ShouldDeploy(*branch, *tag) {
+			continue
+		}
+		for i, _ := range dply.KubeServers {
+			err = dply.MakeKubesConfig(*kubeConfig, i)
+			die(err)
+			fmt.Printf("deploying %s to %s on %s\n", dply.Name, dply.KubeNamespace, dply.KubeServers[i])
+		}
+	}
+
+	// go through each deployment
+	// check to see if requirements are met
+	// go through each server
+	// set config
+	// apply yamls
+	// wait for deployments
+
 }
 
 func die(err error) {
