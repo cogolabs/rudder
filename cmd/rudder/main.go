@@ -6,6 +6,12 @@ import (
 	"os"
 
 	"github.com/ryantking/rudder/internal/config"
+	"github.com/ryantking/rudder/internal/docker"
+)
+
+const (
+	errColor = "\033[91m"
+	endColor = "\033[0m"
 )
 
 var (
@@ -15,13 +21,15 @@ var (
 
 func main() {
 	flag.Parse()
-	_, err := config.Load()
+	cfg, err := config.Load()
+	die(err)
+	err = docker.WaitForImage(cfg, *tag)
 	die(err)
 }
 
 func die(err error) {
 	if err != nil {
-		fmt.Fprintf(os.Stderr, err.Error())
+		fmt.Fprintf(os.Stderr, "%s%s%s\n", errColor, err.Error(), endColor)
 		os.Exit(1)
 	}
 }

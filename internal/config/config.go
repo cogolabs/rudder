@@ -8,12 +8,14 @@ import (
 )
 
 const (
-	configName     = ".rudder.yml"
-	defaultTimeout = time.Minute
+	configName      = ".rudder.yml"
+	defaultTimeout  = time.Minute
+	defaultRegistry = "https://index.docker.io"
 )
 
 // Config represents a kubernetes configuration
 type Config struct {
+	DockerRegistry   string        `yaml:"docker_registry"`
 	DockerImage      string        `yaml:"docker_image"`
 	DockerTimeout    time.Duration `yaml:"-"`
 	DockerTimeoutStr string        `yaml:"docker_timeout"`
@@ -56,6 +58,9 @@ func readYAML() (*Config, error) {
 }
 
 func (cfg *Config) process() error {
+	if cfg.DockerRegistry == "" {
+		cfg.DockerRegistry = defaultRegistry
+	}
 	if cfg.DockerImage == "" {
 		return &ErrMissingField{"docker_image"}
 	}

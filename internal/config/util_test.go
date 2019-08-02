@@ -4,8 +4,9 @@ import "time"
 
 var (
 	testConfig = Config{
-		DockerImage:   "registry.test.net/org/repo",
-		DockerTimeout: 2 * time.Minute,
+		DockerRegistry: "https://registry.server.net",
+		DockerImage:    "org/repo",
+		DockerTimeout:  2 * time.Minute,
 		Deployments: []Deployment{
 			{
 				Name:            "prod",

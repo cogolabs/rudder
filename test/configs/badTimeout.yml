@@ -1,4 +1,5 @@
-docker_image: "registry.test.net/org/repo"
+docker_registry: "https://registry.server.net"
+docker_image: "org/repo"
 docker_timeout: "-3"
 deployments:
   - name: prod

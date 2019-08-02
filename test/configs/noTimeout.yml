@@ -1,4 +1,5 @@
-docker_image: "registry.test.net/org/repo"
+docker_registry: "https://registry.server.net"
+docker_image: "org/repo"
 deployments:
   - name: prod
     only_tags: true
