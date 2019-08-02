@@ -24,27 +24,21 @@ func main() {
 	flag.Parse()
 	cfg, err := config.Load()
 	die(err)
+	fmt.Printf("Waiting for %s:%s to builld on %s...\n", cfg.DockerImage, *tag, cfg.DockerRegistry)
 	err = docker.WaitForImage(cfg, *tag)
 	die(err)
 
 	for _, dply := range cfg.Deployments {
 		if !dply.ShouldDeploy(*branch, *tag) {
+			fmt.Printf("%s does not have its requirements met, skipping...\n", dply.Name)
 			continue
 		}
 		for i, _ := range dply.KubeServers {
 			err = dply.MakeKubesConfig(*kubeConfig, i)
 			die(err)
-			fmt.Printf("deploying %s to %s on %s\n", dply.Name, dply.KubeNamespace, dply.KubeServers[i])
+			fmt.Printf("Deploying %s to %s on %s\n", dply.Name, dply.KubeNamespace, dply.KubeServers[i])
 		}
 	}
-
-	// go through each deployment
-	// check to see if requirements are met
-	// go through each server
-	// set config
-	// apply yamls
-	// wait for deployments
-
 }
 
 func die(err error) {
