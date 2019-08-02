@@ -49,6 +49,10 @@ func checkImage(cfg *config.Config, tag string) (bool, error) {
 		return false, err
 	}
 
+	return checkResponse(res)
+}
+
+func checkResponse(res *http.Response) (bool, error) {
 	if res.StatusCode == http.StatusOK {
 		return true, nil
 	}
@@ -56,5 +60,5 @@ func checkImage(cfg *config.Config, tag string) (bool, error) {
 		return false, nil
 	}
 
-	return false, &ErrBadDockerResponse{res.StatusCode, url}
+	return false, &ErrBadDockerResponse{res.StatusCode, res.Request.URL.String()}
 }
