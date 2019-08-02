@@ -43,7 +43,7 @@ var DefaultConfig = Config{
 	Clusters:       []Cluster{{Name: "cluster"}},
 	Contexts:       []Context{{Name: "cluster"}},
 	CurrentContext: "cluster",
-	Kind:           "config",
+	Kind:           "Config",
 	Preferences:    make(map[string]string),
 	Users:          []User{{Name: "default"}},
 }

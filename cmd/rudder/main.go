@@ -7,6 +7,7 @@ import (
 
 	"github.com/ryantking/rudder/internal/config"
 	"github.com/ryantking/rudder/internal/docker"
+	"github.com/ryantking/rudder/internal/kubes"
 )
 
 const (
@@ -37,6 +38,9 @@ func main() {
 			err = dply.MakeKubesConfig(*kubeConfig, i)
 			die(err)
 			fmt.Printf("Deploying %s to %s on %s\n", dply.Name, dply.KubeNamespace, dply.KubeServers[i])
+			client, err := kubes.NewClient(*kubeConfig)
+			die(err)
+			fmt.Println(client)
 		}
 	}
 }
