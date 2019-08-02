@@ -10,6 +10,6 @@ before_script:
   - ./cc-test-reporter before-build
   - go get github.com/axw/gocov/gocov
 script:
-  - make lint test
+  - make test
 after_success:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
