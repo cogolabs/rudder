@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"runtime"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -16,10 +17,20 @@ import (
 const (
 	testVersion = "v1.13.2"
 	testBinary  = "kubectl binary"
+	testYAML    = "../../test/k8s/deploy.yml"
 )
 
 type KubectlTestSuite struct {
 	suite.Suite
+	origYAML []byte
+}
+
+func (suite *KubectlTestSuite) SetupSuite() {
+	require := suite.Require()
+
+	b, err := ioutil.ReadFile(testYAML)
+	require.NoError(err)
+	suite.origYAML = b
 }
 
 func (suite *KubectlTestSuite) TearDownTest() {
@@ -28,6 +39,8 @@ func (suite *KubectlTestSuite) TearDownTest() {
 	kubectlPath = "./kubectl"
 	err := Uninstall()
 	require.NoError(err)
+
+	ioutil.WriteFile(testYAML, suite.origYAML, 0644)
 }
 
 func (suite *KubectlTestSuite) TestInstall() {
@@ -68,12 +81,24 @@ func (suite *KubectlTestSuite) TestApplyDir() {
 	kubectlPath = "echo"
 
 	buf := new(bytes.Buffer)
-	err := ApplyDir(buf, "../../test/k8s", "./my/kube/config")
+	err := ApplyDir(buf, "../../test/k8s", "mytag", "./my/kube/config")
 	require.NoError(err)
 	expected := `echo apply -f ../../test/k8s/deploy.yml --kubeconfig=./my/kube/config
 apply -f ../../test/k8s/deploy.yml --kubeconfig=./my/kube/config
 `
 	assert.Equal(expected, buf.String())
+}
+
+func (suite *KubectlTestSuite) TestSubTag() {
+	assert := suite.Assert()
+	require := suite.Require()
+
+	err := subTag(testYAML, "my_tag")
+	require.NoError(err)
+	b, err := ioutil.ReadFile(testYAML)
+	require.NoError(err)
+	assert.True(strings.Contains(string(b), "my_tag"))
+	assert.False(strings.Contains(string(b), imageTagPlaceholder))
 }
 
 func TestKubectlTestSuite(t *testing.T) {

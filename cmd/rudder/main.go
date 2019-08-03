@@ -20,6 +20,9 @@ const (
 	travisBranchVar = "TRAVIS_BRANCH"
 	travisTagVar    = "TRAVIS_TAG"
 
+	masterTag = "master"
+	latestTag = "latest"
+
 	kubectlVersionURL = "https://storage.googleapis.com/kubernetes-release/release/stable.txt"
 )
 
@@ -35,25 +38,36 @@ func main() {
 	cfg, err := config.Load()
 	die(err)
 	branch, tag := branchAndTag()
-	fmt.Printf("Waiting for %s:%s to build on %s...\n", cfg.DockerImage, tag, cfg.DockerRegistry)
-	err = docker.WaitForImage(cfg, tag)
+	imageTag := imageTag(branch, tag)
+
+	deployments := make([]config.Deployment, 0, len(cfg.Deployments))
+	for _, dply := range cfg.Deployments {
+		if !dply.ShouldDeploy(branch, tag) {
+			fmt.Printf("%s does not have its requirements met, skipping...\n", dply.Name)
+			continue
+		}
+		deployments = append(deployments, dply)
+	}
+
+	if len(deployments) == 0 {
+		fmt.Println("no deployments found to update, exiting...")
+		return
+	}
+
+	fmt.Printf("Waiting for %s:%s to build on %s...\n", cfg.DockerImage, imageTag, cfg.DockerRegistry)
+	err = docker.WaitForImage(cfg, imageTag)
 	die(err)
 	kctlV, err := kubectlVersion()
 	die(err)
 	err = kubectl.Install(kctlV)
 	die(err)
 
-	for _, dply := range cfg.Deployments {
-		if !dply.ShouldDeploy(branch, tag) {
-			fmt.Printf("%s does not have its requirements met, skipping...\n", dply.Name)
-			continue
-		}
-
+	for _, dply := range deployments {
 		for i := range dply.KubeServers {
 			err = dply.MakeKubesConfig(&cfg.User, *kubeConfig, i)
 			die(err)
 			fmt.Printf("Deploying %s to %s on %s\n", dply.Name, dply.KubeNamespace, dply.KubeServers[i].Server)
-			err = kubectl.ApplyDir(os.Stdout, dply.YAMLFolder, *kubeConfig)
+			err = kubectl.ApplyDir(os.Stdout, dply.YAMLFolder, imageTag, *kubeConfig)
 		}
 	}
 
@@ -75,6 +89,17 @@ func branchAndTag() (string, string) {
 	}
 
 	return *passedBranch, *passedTag
+}
+
+func imageTag(branch, tag string) string {
+	if tag != "" {
+		return tag
+	}
+	if branch == masterTag {
+		return latestTag
+	}
+
+	return branch
 }
 
 func kubectlVersion() (string, error) {
