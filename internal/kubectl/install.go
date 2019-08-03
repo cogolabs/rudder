@@ -10,7 +10,7 @@ import (
 
 const (
 	kubectlBase = "https://storage.googleapis.com"
-	pathBase    = "/kubernetes-release/releases/%s/bin/%s/%s/kubectl"
+	pathBase    = "/kubernetes-release/release/%s/bin/%s/%s/kubectl"
 	kubectlPath = "./kubectl"
 )
 

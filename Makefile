@@ -28,4 +28,5 @@ clean:
 	@echo "Cleaning up all generated files"
 	@rm -rf $(PWD)/rudder
 	@rm -rf $(PWD)/c.out
+	@rm -rf $(PWD)/kube
 
