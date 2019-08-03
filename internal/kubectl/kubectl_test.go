@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/ryantking/rudder/internal/config"
 	"github.com/stretchr/testify/suite"
 	"gopkg.in/h2non/gock.v1"
 )
@@ -99,6 +100,23 @@ func (suite *KubectlTestSuite) TestSubTag() {
 	require.NoError(err)
 	assert.True(strings.Contains(string(b), "my_tag"))
 	assert.False(strings.Contains(string(b), imageTagPlaceholder))
+	err = unstashFile(testYAML)
+	require.NoError(err)
+}
+
+func (suite *KubectlTestSuite) TestWaitForRollouts() {
+	assert := suite.Assert()
+	require := suite.Require()
+	kubectlPath = "echo"
+
+	buf := new(bytes.Buffer)
+	err := WaitForRollouts(buf, config.Deployment{KubeNamespace: "mys", KubeDeployments: []string{"myproj-dply"}})
+	require.NoError(err)
+	expected := `Waiting for myproj-dply in namespace mys to rollout...
+echo rollout status -n mys myproj-dply
+rollout status -n mys myproj-dply
+`
+	assert.Equal(expected, buf.String())
 }
 
 func TestKubectlTestSuite(t *testing.T) {

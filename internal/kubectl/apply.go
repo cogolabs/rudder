@@ -73,6 +73,6 @@ func stashFile(path string) error {
 }
 
 func unstashFile(path string) error {
-	srcPath := fmt.Sprintf("%s.bak", path)
-	return os.Rename(srcPath, path)
+	oldpath := fmt.Sprintf("%s.bak", path)
+	return os.Rename(oldpath, path)
 }

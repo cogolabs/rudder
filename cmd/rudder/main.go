@@ -68,6 +68,9 @@ func main() {
 			die(err)
 			fmt.Printf("Deploying %s to %s on %s\n", dply.Name, dply.KubeNamespace, dply.KubeServers[i].Server)
 			err = kubectl.ApplyDir(os.Stdout, dply.YAMLFolder, imageTag, *kubeConfig)
+			die(err)
+			err = kubectl.WaitForRollouts(os.Stdout, dply)
+			die(err)
 		}
 	}
 
