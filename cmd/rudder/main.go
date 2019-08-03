@@ -33,10 +33,15 @@ var (
 	passedImageTag       = flag.String("image-tag", "", "Tag to use for Docker image ")
 	kubeConfig           = flag.String("kube-config", "$HOME/.kube/config", "Location of kube config")
 	passedKubectlVersion = flag.String("kubectl-version", "", "Version of kubectl to use (default latest)")
+	versionCmd           = flag.Bool("version", false, "Show version information and exit")
 )
 
 func main() {
 	flag.Parse()
+	if *versionCmd {
+		printVersion()
+	}
+
 	cfg, err := config.Load()
 	die(err)
 	branch, tag := branchAndTag()
