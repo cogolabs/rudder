@@ -29,6 +29,8 @@ const (
 var (
 	passedBranch         = flag.String("branch", "", "Current branch")
 	passedTag            = flag.String("tag", "", "Current tag")
+	useMaster            = flag.Bool("use-master", false, "Don't substitute 'master' with 'latest'")
+	passedImageTag       = flag.String("image-tag", "", "Tag to use for Docker image ")
 	kubeConfig           = flag.String("kube-config", "$HOME/.kube/config", "Location of kube config")
 	passedKubectlVersion = flag.String("kubectl-version", "", "Version of kubectl to use (default latest)")
 )
@@ -95,10 +97,13 @@ func branchAndTag() (string, string) {
 }
 
 func imageTag(branch, tag string) string {
+	if *passedImageTag != "" {
+		return *passedImageTag
+	}
 	if tag != "" {
 		return tag
 	}
-	if branch == masterTag {
+	if branch == masterTag && !*useMaster {
 		return latestTag
 	}
 
