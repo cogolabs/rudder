@@ -1,4 +1,4 @@
-# Rudder
+![Rudder](https://raw.githubusercontent.com/ryantking/rudder/master/static/img/logo.png)
 
 A simple way to take control over your Kubernetes deployments.
 
