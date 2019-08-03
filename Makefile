@@ -29,4 +29,5 @@ clean:
 	@rm -rf $(PWD)/rudder
 	@rm -rf $(PWD)/c.out
 	@rm -rf $(PWD)/kube
+	@rm -rf $(PWD)/dist
 

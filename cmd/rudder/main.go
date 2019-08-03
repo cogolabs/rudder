@@ -120,6 +120,10 @@ func kubectlVersion() (string, error) {
 		return *passedKubectlVersion, nil
 	}
 
+	return getLatestKubectl()
+}
+
+func getLatestKubectl() (string, error) {
 	res, err := http.Get(kubectlVersionURL)
 	if err != nil {
 		return "", err

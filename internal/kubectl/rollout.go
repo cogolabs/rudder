@@ -9,7 +9,7 @@ import (
 	"github.com/ryantking/rudder/internal/config"
 )
 
-// WaitForRollout waits for a given deployment to finish
+// WaitForRollouts waits for a given deployment to finish all its rollouts
 func WaitForRollouts(out io.Writer, dply config.Deployment) error {
 	for _, kubeDeply := range dply.KubeDeployments {
 		fmt.Fprintf(out, "Waiting for %s in namespace %s to rollout...\n", kubeDeply, dply.KubeNamespace)

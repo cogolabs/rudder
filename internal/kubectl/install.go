@@ -17,26 +17,36 @@ var kubectlPath = "./kubectl"
 
 // Install installs the desired version of kubectl
 func Install(version string) error {
-	path := fmt.Sprintf(pathBase, version, runtime.GOOS, runtime.GOARCH)
-	url := fmt.Sprintf("%s%s", kubectlBase, path)
-	res, err := http.Get(url)
+	binary, err := getBinary(version)
 	if err != nil {
 		return err
 	}
-	defer res.Body.Close()
-	if res.StatusCode != http.StatusOK {
-		return fmt.Errorf("could not install kubectl, received code %d", res.StatusCode)
-	}
+	defer binary.Close()
 	f, err := os.Create(kubectlPath)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
-	_, err = io.Copy(f, res.Body)
+	_, err = io.Copy(f, binary)
 	if err != nil {
 		return err
 	}
+
 	return os.Chmod(kubectlPath, os.ModePerm)
+}
+
+func getBinary(version string) (io.ReadCloser, error) {
+	path := fmt.Sprintf(pathBase, version, runtime.GOOS, runtime.GOARCH)
+	url := fmt.Sprintf("%s%s", kubectlBase, path)
+	res, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	if res.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("could not install kubectl, received code %d", res.StatusCode)
+	}
+
+	return res.Body, nil
 }
 
 // Uninstall deletes the installed binary
