@@ -53,7 +53,7 @@ func main() {
 			err = dply.MakeKubesConfig(&cfg.User, *kubeConfig, i)
 			die(err)
 			fmt.Printf("Deploying %s to %s on %s\n", dply.Name, dply.KubeNamespace, dply.KubeServers[i].Server)
-			err = kubectl.ApplyDir(dply.YAMLFolder, *kubeConfig)
+			err = kubectl.ApplyDir(os.Stdout, dply.YAMLFolder, *kubeConfig)
 		}
 	}
 

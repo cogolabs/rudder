@@ -1,6 +1,7 @@
 package kubectl
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -24,6 +25,7 @@ type KubectlTestSuite struct {
 func (suite *KubectlTestSuite) TearDownTest() {
 	require := suite.Require()
 
+	kubectlPath = "./kubectl"
 	err := Uninstall()
 	require.NoError(err)
 }
@@ -58,6 +60,20 @@ func (suite *KubectlTestSuite) TestInstallBadResponse() {
 
 	err := Install(testVersion)
 	require.EqualError(err, "could not install kubectl, received code 500")
+}
+
+func (suite *KubectlTestSuite) TestApplyDir() {
+	assert := suite.Assert()
+	require := suite.Require()
+	kubectlPath = "echo"
+
+	buf := new(bytes.Buffer)
+	err := ApplyDir(buf, "../../test/k8s", "./my/kube/config")
+	require.NoError(err)
+	expected := `echo apply -f ../../test/k8s/deploy.yml --kubeconfig=./my/kube/config
+apply -f ../../test/k8s/deploy.yml --kubeconfig=./my/kube/config
+`
+	assert.Equal(expected, buf.String())
 }
 
 func TestKubectlTestSuite(t *testing.T) {

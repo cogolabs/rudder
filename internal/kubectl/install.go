@@ -11,8 +11,9 @@ import (
 const (
 	kubectlBase = "https://storage.googleapis.com"
 	pathBase    = "/kubernetes-release/release/%s/bin/%s/%s/kubectl"
-	kubectlPath = "./kubectl"
 )
+
+var kubectlPath = "./kubectl"
 
 // Install installs the desired version of kubectl
 func Install(version string) error {

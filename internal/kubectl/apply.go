@@ -2,6 +2,7 @@ package kubectl
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -9,11 +10,11 @@ import (
 )
 
 // ApplyDir applies all yaml files in a directory
-func ApplyDir(dir, kubeConfig string) error {
-	return filepath.Walk(dir, processYAML(kubeConfig))
+func ApplyDir(out io.Writer, dir, kubeConfig string) error {
+	return filepath.Walk(dir, processYAML(out, kubeConfig))
 }
 
-func processYAML(kubeConfig string) filepath.WalkFunc {
+func processYAML(out io.Writer, kubeConfig string) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -23,13 +24,13 @@ func processYAML(kubeConfig string) filepath.WalkFunc {
 		}
 
 		args := []string{kubectlPath, "apply", "-f", path, fmt.Sprintf("--kubeconfig=%s", kubeConfig)}
-		fmt.Println(strings.Join(args, " "))
+		fmt.Fprintln(out, strings.Join(args, " "))
 		stdout, err := exec.Command(args[0], args[1:]...).CombinedOutput()
 		if err != nil {
 			return err
 		}
 
-		fmt.Println(strings.TrimSuffix(string(stdout), "\n"))
+		fmt.Fprintln(out, strings.TrimSuffix(string(stdout), "\n"))
 		return nil
 	}
 }
