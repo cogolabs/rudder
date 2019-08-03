@@ -8,6 +8,13 @@ builds:
   binary: rudder
   env:
   - CGO_ENABLED=0
+brew:
+  github:
+    owner: ryantking
+    name: homebrew-tap
+  folder: Formula
+  homepage: github.com/ryantking/rudder
+  description: Portable Kubernetes deployment tool
 archives:
 - replacements:
     darwin: Darwin
