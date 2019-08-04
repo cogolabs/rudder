@@ -136,7 +136,7 @@ can be specified with the `-kube-config` flag.
 
 ### Config File
 
-Rudder looks for a config file in the current working directory named `.rudder.yml`
+Rudder looks for a config file in the current working directory named `.rudder.yml` or `rudder.json`
 
 Here is an example configuration file with default values filled in and explanation.
 
