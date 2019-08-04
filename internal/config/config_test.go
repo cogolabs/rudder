@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -23,8 +24,12 @@ type ConfigTestSuite struct {
 func (suite *ConfigTestSuite) TearDownTest() {
 	require := suite.Require()
 
-	err := os.RemoveAll(configName)
+	matches, err := filepath.Glob(fmt.Sprintf("./%s.*", configBase))
 	require.NoError(err)
+	for _, match := range matches {
+		err := os.RemoveAll(match)
+		require.NoError(err)
+	}
 	err = os.RemoveAll(filepath.Dir(testConfigPath))
 	require.NoError(err)
 }
@@ -32,12 +37,33 @@ func (suite *ConfigTestSuite) TearDownTest() {
 func (suite *ConfigTestSuite) TestLoad() {
 	assert := suite.Assert()
 	require := suite.Require()
+	tests := []struct {
+		path string
+		ext  string
+	}{{"main.yml", "yml"}, {"main.json", "json"}}
 
-	err := testutil.WriteConfig("../../test/configs/main.yml")
+	for _, tt := range tests {
+		path := fmt.Sprintf("../../test/configs/%s", tt.path)
+		toPath := fmt.Sprintf("%s.%s", configBase, tt.ext)
+		err := testutil.WriteConfigTo(path, toPath)
+		require.NoError(err)
+		cfg, err := Load()
+		require.NoError(err)
+		assert.Equal(&testConfig, cfg)
+		err = os.RemoveAll(toPath)
+		require.NoError(err)
+	}
+}
+
+func (suite *ConfigTestSuite) TestLoadBadEXT() {
+	require := suite.Require()
+
+	path := "../../test/configs/main.yml"
+	toPath := fmt.Sprintf("%s.gson", configBase)
+	err := testutil.WriteConfigTo(path, toPath)
 	require.NoError(err)
-	cfg, err := Load()
-	require.NoError(err)
-	assert.Equal(&testConfig, cfg)
+	_, err = Load()
+	require.EqualError(err, "unsupported config format: .gson")
 }
 
 func (suite *ConfigTestSuite) TestLoadDefaultTimeout() {
@@ -71,7 +97,7 @@ func (suite *ConfigTestSuite) TestMissingConfig() {
 	require := suite.Require()
 
 	_, err := Load()
-	require.True(os.IsNotExist(err))
+	require.Equal(ErrConfigNotFound, err)
 }
 
 func (suite *ConfigTestSuite) TestLoadBadYAML() {

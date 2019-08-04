@@ -12,10 +12,10 @@ const (
 
 // Container holds container configuration image
 type Container struct {
-	Registry   string        `yaml:"registry"`
-	Image      string        `yaml:"image"`
-	TimeoutStr string        `yaml:"timeout"`
-	Timeout    time.Duration `yaml:"-"`
+	Registry   string        `json:"registry" yaml:"registry"`
+	Image      string        `json:"image" yaml:"image"`
+	TimeoutStr string        `json:"timeout" yaml:"timeout"`
+	Timeout    time.Duration `json:"-" yaml:"-"`
 }
 
 func (cntr *Container) process(n int) (*Container, error) {

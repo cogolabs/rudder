@@ -9,10 +9,10 @@ const (
 
 // User holds information about the kubernetes user
 type User struct {
-	Name              string `yaml:"name"`
-	Token             string `yaml:"-"`
-	ClientCertificate string `yaml:"client_certificate"`
-	ClientKey         string `yaml:"client_key"`
+	Name              string `json:"name" yaml:"name"`
+	Token             string `json:"-" yaml:"-"`
+	ClientCertificate string `json:"client_certificate" yaml:"client_certificate"`
+	ClientKey         string `json:"client_key" yaml:"client_key"`
 }
 
 func (u *User) process() *User {
