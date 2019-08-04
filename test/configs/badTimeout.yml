@@ -1,6 +1,7 @@
-docker_registry: "https://registry.server.net"
-docker_image: "org/repo"
-docker_timeout: "-3"
+containers:
+  - registry: "https://registry.server.net"
+    image: "org/repo"
+    timeout: "-3"
 deployments:
   - name: prod
     only_tags: true

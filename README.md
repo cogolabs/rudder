@@ -36,7 +36,8 @@ For a single cluster deployment that is deployed on tags to the master branch,
 a basic configuration looks as follows.
 
 ```yaml
-docker_image: "library/nginx"
+containers:
+  - image: "library/nginx"
 deployments:
   - name: prod
     branch: master
@@ -55,14 +56,15 @@ configuration that adds a canary deployment to a different namespace, and
 redundant deployments on two different clusters each:
 
 ```yaml
-docker_image: "library/nginx"
+containers:
+  - image: "library/nginx"
 deployments:
   - name: prod
     branch: master
     only_tags: true
     tags:
-        - "v*"
-        - "multi-v*"
+      - "v*"
+      - "multi-v*"
     kube_servers:
       - server: "https://k1.mycluster.net"
       - server: "https://k2.mycluster.net"
@@ -74,8 +76,8 @@ deployments:
     branch: master
     only_tags: true
     tags:
-        - "canary-v*"
-        - "multi-v*"
+      - "canary-v*"
+      - "multi-v*"
     kube_servers:
       - server: "https://k1.mycluster.net"
       - server: "https://k2.mycluster.net"
@@ -139,14 +141,16 @@ Rudder looks for a config file in the current working directory named `.rudder.y
 Here is an example configuration file with default values filled in and explanation.
 
 ```yaml
-# The Docker Registry that hosts the image
-docker_registry: https://index.docker.io # Docker Hub
+# Configuration for the containers required for deployment
+containers:
+  - # Registry that hosts the image
+    registry: https://index.docker.io # Docker Hub
 
-# The Docker image to deploy
-docker_image: # REQUIRED
+    # Image to wait to build
+    image: # REQUIRED
 
-# Max amount of time to wait for the image to be available before erroring out
-docker_timeout: "1m"
+    # Timeout for waiting for the image to become available
+    timeout: "5m"
 
 # User configuration for interacting with Kubernetes
 user:

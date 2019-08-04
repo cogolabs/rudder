@@ -12,11 +12,11 @@
 *.out
 
 # Ignore compiled binary
-./rudder
+/rudder
 
 # Ignore test configuration
 .rudder.yml
 
 # Ignore test kube config
-./kube
+/kube
 

@@ -4,10 +4,12 @@ import "time"
 
 var (
 	testConfig = Config{
-		DockerRegistry: "https://registry.server.net",
-		DockerImage:    "org/repo",
-		DockerTimeout:  2 * time.Minute,
-		User:           User{Name: defaultUserName},
+		Containers: []Container{{
+			Registry: "https://registry.server.net",
+			Image:    "org/repo",
+			Timeout:  2 * time.Minute,
+		}},
+		User: User{Name: defaultUserName},
 		Deployments: []Deployment{
 			{
 				Name:            "prod",

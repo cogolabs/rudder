@@ -14,31 +14,35 @@ var (
 	tickerInterval = 5 * time.Second
 )
 
-// WaitForImage waits for the given docker iamge and tag to be built
-func WaitForImage(cfg *config.Config, tag string) error {
-	timer := time.NewTimer(cfg.DockerTimeout)
+// WaitForImages waits for the given docker iamges and tag to be built
+func WaitForImages(cfg *config.Config, tag string) error {
 	ticker := time.NewTicker(tickerInterval)
-	defer timer.Stop()
-	for {
-		ready, err := checkImage(cfg, tag)
-		if err != nil {
-			return err
-		}
-		if ready {
-			return nil
-		}
+	for _, cntr := range cfg.Containers {
+		fmt.Printf("Waiting for %s:%s to build on %s...\n", cntr.Image, tag, cntr.Registry)
+		timer := time.NewTimer(cntr.Timeout)
+		for {
+			ready, err := checkImage(&cntr, tag)
+			if err != nil {
+				return err
+			}
+			if ready {
+				break
+			}
 
-		select {
-		case <-timer.C:
-			return ErrTimeout
-		case <-ticker.C:
-			continue
+			select {
+			case <-timer.C:
+				return ErrTimeout
+			case <-ticker.C:
+				continue
+			}
 		}
 	}
+
+	return nil
 }
 
-func checkImage(cfg *config.Config, tag string) (bool, error) {
-	url := fmt.Sprintf("%s/v1/repositories/%s/tags/%s", cfg.DockerRegistry, cfg.DockerImage, tag)
+func checkImage(cntr *config.Container, tag string) (bool, error) {
+	url := fmt.Sprintf("%s/v1/repositories/%s/tags/%s", cntr.Registry, cntr.Image, tag)
 	res, err := http.Get(url)
 	if err != nil {
 		return false, err

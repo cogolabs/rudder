@@ -49,7 +49,7 @@ func (suite *ConfigTestSuite) TestLoadDefaultTimeout() {
 	cfg, err := Load()
 	require.NoError(err)
 	expected := testConfig
-	expected.DockerTimeout = defaultTimeout
+	expected.Containers[0].Timeout = defaultTimeout
 	assert.Equal(&expected, cfg)
 }
 
@@ -98,7 +98,7 @@ func (suite *ConfigTestSuite) TestLoadMissingDockerImage() {
 	err := testutil.WriteConfig("../../test/configs/missingImage.yml")
 	require.NoError(err)
 	_, err = Load()
-	require.EqualError(err, "required field missing: docker_image")
+	require.EqualError(err, "required field missing: containers[0].image")
 }
 
 func (suite *ConfigTestSuite) TestLoadMissingName() {

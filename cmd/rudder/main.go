@@ -61,8 +61,7 @@ func main() {
 		return
 	}
 
-	fmt.Printf("Waiting for %s:%s to build on %s...\n", cfg.DockerImage, imageTag, cfg.DockerRegistry)
-	err = docker.WaitForImage(cfg, imageTag)
+	err = docker.WaitForImages(cfg, imageTag)
 	die(err)
 	kctlV, err := kubectlVersion()
 	die(err)

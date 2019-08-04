@@ -2,25 +2,17 @@ package config
 
 import (
 	"os"
-	"time"
 
 	"gopkg.in/yaml.v2"
 )
 
-const (
-	configName      = ".rudder.yml"
-	defaultTimeout  = time.Minute
-	defaultRegistry = "https://index.docker.io"
-)
+const configName = ".rudder.yml"
 
 // Config represents a kubernetes configuration
 type Config struct {
-	DockerRegistry   string        `yaml:"docker_registry"`
-	DockerImage      string        `yaml:"docker_image"`
-	DockerTimeout    time.Duration `yaml:"-"`
-	DockerTimeoutStr string        `yaml:"docker_timeout"`
-	User             User          `yaml:"user"`
-	Deployments      []Deployment  `yaml:"deployments"`
+	User        User         `yaml:"user"`
+	Containers  []Container  `yaml:"containers"`
+	Deployments []Deployment `yaml:"deployments"`
 }
 
 // Load loads in all configurations from a file
@@ -29,12 +21,18 @@ func Load() (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	err = cfg.process()
-	if err != nil {
-		return nil, err
-	}
+
 	user := cfg.User.process()
 	cfg.User = *user
+
+	for i, cntr := range cfg.Containers {
+		processed, err := cntr.process(i)
+		if err != nil {
+			return nil, err
+		}
+		cfg.Containers[i] = *processed
+	}
+
 	for i, dply := range cfg.Deployments {
 		processed, err := dply.process(i)
 		if err != nil {
@@ -58,25 +56,4 @@ func readYAML() (*Config, error) {
 	}
 
 	return cfg, nil
-}
-
-func (cfg *Config) process() error {
-	if cfg.DockerRegistry == "" {
-		cfg.DockerRegistry = defaultRegistry
-	}
-	if cfg.DockerImage == "" {
-		return &ErrMissingField{"docker_image"}
-	}
-	if cfg.DockerTimeoutStr == "" {
-		cfg.DockerTimeout = defaultTimeout
-	} else {
-		timeout, err := time.ParseDuration(cfg.DockerTimeoutStr)
-		if err != nil {
-			return err
-		}
-		cfg.DockerTimeoutStr = ""
-		cfg.DockerTimeout = timeout
-	}
-
-	return nil
 }
