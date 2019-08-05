@@ -1,4 +1,4 @@
-![Rudder](https://raw.githubusercontent.com/ryantking/rudder/master/docs/logo.png)
+![Rudder](./docs/logo.png)
 
 [![Build Status](https://travis-ci.org/ryantking/rudder.svg?branch=master)](https://travis-ci.org/ryantking/rudder)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/e3ea6eff6537ba18ce2a/test_coverage)](https://codeclimate.com/github/ryantking/rudder/test_coverage)
@@ -35,7 +35,7 @@ Rudder is configured by a single configuration file that can be as simple or com
 
 ## Demo
 
-![Demo](https://raw.githubusercontent.com/ryantking/rudder/master/docs/demo.gif)
+![Demo](./docs/demo.svg)
 
 ## Install
 
