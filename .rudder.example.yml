@@ -1,0 +1,54 @@
+# All configuration options with default values
+
+# Configuration for the containers required for deployment
+containers:
+  - # Registry that hosts the image
+    registry: https://index.docker.io # Docker Hub
+
+    # Image to wait to build
+    image: # REQUIRED
+
+    # Timeout for waiting for the image to become available
+    timeout: "5m"
+
+# User configuration for interacting with Kubernetes
+user:
+    # Name of the user
+    name: default
+
+    # Path to the client certificate
+    client_certificate:
+
+    # Path to the client key
+    client_key:
+
+# Deployment configurations
+deployments:
+  - # Name of the deployment
+    name: # REQUIRED
+
+    # Branch to execute the deployment on
+    branch: master
+
+    # Only deploy on tagged releases
+    only_tags: false
+
+    # Tag patterns to match
+    tags:
+
+    # Folder of YAML Kubernetes resources to apply
+    yaml_folder: "k8s"
+
+    # Kubernetes Servers to apply the deployments to
+    kube_servers:
+      - # URL of the server
+        server: # REQUIRED
+
+        # Path to the certificate authority
+        ca:
+
+    # Kubernetes namespace to apply the deployments in
+    kube_namespace: default
+
+    # Kubernetes deployments to watch for rollout
+    kube_deployments:
