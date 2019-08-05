@@ -40,18 +40,18 @@ func (suite *ConfigTestSuite) TestLoad() {
 	tests := []struct {
 		path string
 		ext  string
-	}{{"main.yml", "yml"}, {"main.json", "json"}}
+	}{{"main.yml", "yml"}, {"main.json", "json"}, {"main.toml", "toml"}}
 
 	for _, tt := range tests {
 		path := fmt.Sprintf("../../test/configs/%s", tt.path)
 		toPath := fmt.Sprintf("%s.%s", configBase, tt.ext)
 		err := testutil.WriteConfigTo(path, toPath)
-		require.NoError(err)
+		require.NoError(err, "For: %s", tt.ext)
 		cfg, err := Load()
-		require.NoError(err)
-		assert.Equal(&testConfig, cfg)
+		require.NoError(err, "For: %s", tt.ext)
+		assert.Equal(&testConfig, cfg, "For: %s", tt.ext)
 		err = os.RemoveAll(toPath)
-		require.NoError(err)
+		require.NoError(err, "For: %s", tt.ext)
 	}
 }
 

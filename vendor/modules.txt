@@ -1,4 +1,6 @@
-# github.com/davecgh/go-spew v1.1.1
+# github.com/BurntSushi/toml v0.3.1
+github.com/BurntSushi/toml
+# github.com/davecgh/go-spew v1.1.0
 github.com/davecgh/go-spew/spew
 # github.com/h2non/parth v0.0.0-20190131123155-b4df798d6542
 github.com/h2non/parth

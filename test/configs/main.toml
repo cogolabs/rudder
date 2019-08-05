@@ -1,0 +1,40 @@
+[[containers]]
+registry = "https://registry.server.net"
+image = "org/repo"
+timeout = "2m"
+
+[[deployments]]
+name = "prod"
+only_tags = true
+tags = [ "multi-v*", "v*" ]
+kube_deployments = ["deployment/myapi", "statefulset/myworker"]
+kube_namespace = "myproject"
+
+  [[deployments.kube_servers]]
+  server = "mykubes1.test.net"
+
+  [[deployments.kube_servers]]
+  server = "mykubes2.test.net"
+
+[[deployments]]
+name = "canary"
+only_tags = true
+yaml_folder = "k8s-canary"
+tags = ["multi-v*", "canary-v*"]
+kube_namespace = "myproject"
+kube_deployments = ["deployment/myapi-canary", "statefulset/myworker-canary"]
+
+  [[deployments.kube_servers]]
+  server = "mykubes1.test.net"
+
+  [[deployments.kube_servers]]
+  server = "mykubes2.test.net"
+
+[[deployments]]
+name = "staging"
+yaml_folder = "k8s-staging"
+kube_namespace = "myproject"
+kube_deployments = ["deployment/myapi", "statefulset/myworker"]
+
+  [[deployments.kube_servers]]
+  server = "mykubes3.test.net"

@@ -19,14 +19,14 @@ const (
 
 // Deployment holds the configuration info for a specific deployment
 type Deployment struct {
-	Name            string       `json:"name" yaml:"name"`
-	Branch          string       `json:"branch" yaml:"branch"`
-	OnlyTags        bool         `json:"only_tags" yaml:"only_tags"`
-	Tags            []string     `json:"tags" yaml:"tags"`
-	YAMLFolder      string       `json:"yaml_folder" yaml:"yaml_folder"`
-	KubeServers     []KubeServer `json:"kube_servers" yaml:"kube_servers"`
-	KubeNamespace   string       `json:"kube_namespace" yaml:"kube_namespace"`
-	KubeDeployments []string     `json:"kube_deployments" yaml:"kube_deployments"`
+	Name            string       `json:"name" yaml:"name" toml:"name"`
+	Branch          string       `json:"branch" yaml:"branch" toml:"branch"`
+	OnlyTags        bool         `json:"only_tags" yaml:"only_tags" toml:"only_tags"`
+	Tags            []string     `json:"tags" yaml:"tags" toml:"tags"`
+	YAMLFolder      string       `json:"yaml_folder" yaml:"yaml_folder" toml:"yaml_folder"`
+	KubeServers     []KubeServer `json:"kube_servers" yaml:"kube_servers" toml:"kube_servers"`
+	KubeNamespace   string       `json:"kube_namespace" yaml:"kube_namespace" toml:"kube_namespace"`
+	KubeDeployments []string     `json:"kube_deployments" yaml:"kube_deployments" toml:"kube_deployments"`
 
 	tagsRegex string
 }

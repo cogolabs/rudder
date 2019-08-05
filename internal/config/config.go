@@ -17,6 +17,7 @@ const (
 	extJSON = ".json"
 	extYML  = ".yml"
 	extYAML = ".yaml"
+	extTOML = ".toml"
 )
 
 var (
@@ -28,9 +29,9 @@ var (
 
 // Config represents a kubernetes configuration
 type Config struct {
-	User        User         `json:"user"`
-	Containers  []Container  `json:"containers"`
-	Deployments []Deployment `json:"deployments"`
+	User        User         `json:"user" yaml:"user" toml:"user"`
+	Containers  []Container  `json:"containers" yaml:"containers" toml:"containers"`
+	Deployments []Deployment `json:"deployments" yaml:"deployments" toml:"deployments"`
 }
 
 type decoder interface {
@@ -78,6 +79,8 @@ func readConfig() (*Config, error) {
 		d = json.NewDecoder(f)
 	case extYAML, extYML:
 		d = yaml.NewDecoder(f)
+	case extTOML:
+		d = &tomlDecoder{f}
 	default:
 		return nil, fmt.Errorf("unsupported config format: %s", filepath.Ext(path))
 	}
