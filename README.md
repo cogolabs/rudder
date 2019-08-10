@@ -297,7 +297,7 @@ Currently no support for docker registry configuration, but will be added in the
 
 Feel free to open issues and pull requests for anything that would make this project more useful or easier to maintain.
 
-Would especially appreiate help from folks who use other container registers with varying authentication schemes such
+Would especially appreciate help from folks who use other container registers with varying authentication schemes such
 as GitLab Container Registry and AWS ECR as well as those who use the various managed Kubernetes solutions.
 
 ## Thanks
