@@ -4,7 +4,7 @@ install: true
 env:
   global:
     - GOPROXY=https://goproxy.io
-    - CC_TEST_REPORTER_ID=648c7424d576cf040cf63e9fc4ff63e621f8874291471c3ed030bf9d639a8933
+    - CC_TEST_REPORTER_ID=e9d5f2fb8eb605d9b5d86c797fdd0bb2372e8129fcfcd4b6d1b33edece8d54e7
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
