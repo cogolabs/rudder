@@ -2,16 +2,15 @@
 PWD := $(shell pwd)
 GOPATH := $(shell go env GOPATH)
 
-all: vendor build run
-.PHONY: vendor test
+all: tidy build run
+.PHONY: tidy test
 
 # Building and running
-vendor:
+tidy:
 	@go mod tidy
-	@go mod vendor
-build:
+build: tidy
 	@echo "Building Rudder to $(PWD)/rudder..."
-	@GO111MODULE=on go build -mod=vendor -o $(PWD)/rudder ./cmd/rudder
+	@GO111MODULE=on go build -o $(PWD)/rudder ./cmd/rudder
 
 # Linting and testing
 $(GOPATH)/bin/golangci-lint:
@@ -20,7 +19,7 @@ lint: $(GOPATH)/bin/golangci-lint
 	@echo "Running golangci-lint"
 	@golangci-lint run ./internal/... ./cmd/...
 test:
-	@GO111MODULE=on go test -mod=vendor -race -covermode=atomic -coverprofile=c.out ./internal/...
+	@GO111MODULE=on go test -race -covermode=atomic -coverprofile=c.out ./internal/...
 
 
 # Remove generated files
