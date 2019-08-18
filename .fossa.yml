@@ -5,10 +5,10 @@ version: 2
 cli:
   server: https://app.fossa.com
   fetcher: custom
-  project: https://github.com/ryantking/rudder
+  project: https://github.com/cogolabs/rudder
 analyze:
   modules:
-  - name: github.com/ryantking/rudder/cmd/rudder
+  - name: github.com/cogolabs/rudder/cmd/rudder
     type: go
-    target: github.com/ryantking/rudder/cmd/rudder
+    target: github.com/cogolabs/rudder/cmd/rudder
     path: cmd/rudder

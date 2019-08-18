@@ -1,9 +1,9 @@
 ![Rudder](./docs/logo.png)
 
-[![Build Status](https://travis-ci.org/ryantking/rudder.svg?branch=master)](https://travis-ci.org/ryantking/rudder)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/e3ea6eff6537ba18ce2a/test_coverage)](https://codeclimate.com/github/ryantking/rudder/test_coverage)
-[![Maintainability](https://api.codeclimate.com/v1/badges/e3ea6eff6537ba18ce2a/maintainability)](https://codeclimate.com/github/ryantking/rudder/maintainability)
-[![Go Report Card](https://goreportcard.com/badge/github.com/ryantking/rudder)](https://goreportcard.com/report/github.com/ryantking/rudder)
+[![Build Status](https://travis-ci.org/cogolabs/rudder.svg?branch=master)](https://travis-ci.org/cogolabs/rudder)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/6eed3bff766af96d2d92/test_coverage)](https://codeclimate.com/github/cogolabs/rudder/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/6eed3bff766af96d2d92/maintainability)](https://codeclimate.com/github/cogolabs/rudder/maintainability)
+[![Go Report Card](https://goreportcard.com/badge/github.com/cogolabs/rudder)](https://goreportcard.com/report/github.com/cogolabs/rudder)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 
@@ -45,27 +45,27 @@ A specific version of the rudder binary canned be installed using the install.sh
 
 ```bash
 # install to $(go env GOPATH)/bin/rudder
-curl -sfL https://raw.githubusercontent.com/ryantking/rudder/master/install.sh | sh -s -- -b $(go env GOPATH)/bin vX.Y.Z
+curl -sfL https://raw.githubusercontent.com/cogolabs/rudder/master/install.sh | sh -s -- -b $(go env GOPATH)/bin vX.Y.Z
 
 # install to ./bin/rudder
-curl -sfL https://raw.githubusercontent.com/ryantking/rudder/master/install.sh | sh -s vX.Y.Z
+curl -sfL https://raw.githubusercontent.com/cogolabs/rudder/master/install.sh | sh -s vX.Y.Z
 ```
 
 Where vX.Y.Z is the desired version (usually latest) from the
-[releases page](https://github.com/ryantking/rudder/releases)
+[releases page](https://github.com/cogolabs/rudder/releases)
 
 ### Local Installation
 
 The tool can be installed locally like any other go program:
 
 ```bash
-go get -u github.com/ryantking/rudder/cmd/rudder
+go get -u github.com/cogolabs/rudder/cmd/rudder
 ```
 
 Go 1.11 modules allow a specific version to be installed:
 
 ```golang
-GO111MODULE=on go get github.com/ryantking/rudder/cmd/rudder@v1.2.0
+GO111MODULE=on go get github.com/cogolabs/rudder/cmd/rudder@v1.2.0
 ```
 
 ## Quick Start
@@ -100,7 +100,7 @@ for Travis-CI:
 ...
 
 after_success:
-  - curl -sfL https://raw.githubusercontent.com/ryantking/rudder/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.2.0
+  - curl -sfL https://raw.githubusercontent.com/cogolabs/rudder/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.2.0
   - rudder
 ```
 
@@ -110,7 +110,7 @@ It can also be done using Travis's deploy steps:
 ...
 
 before_deploy:
-  - curl -sfL https://raw.githubusercontent.com/ryantking/rudder/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.2.0
+  - curl -sfL https://raw.githubusercontent.com/cogolabs/rudder/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.2.0
 deploy:
   provider: script
   script: rudder
@@ -316,4 +316,5 @@ off of a gloriously simple language spec.
 
 ## License Scan
 
-[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B12297%2Fgithub.com%2Fryantking%2Frudder.svg?type=large)](https://app.fossa.com/projects/custom%2B12297%2Fgithub.com%2Fryantking%2Frudder?ref=badge_large)
+[![FOSSA Status](https://app.fossa.com/api/projects/custom%2B12297%2Fgithub.com%2Fcogolabs%2Frudder.svg?type=large)](https://app.fossa.com/projects/custom%2B12297%2Fgithub.com%2Fcogolabs%2Frudder?ref=badge_large)
+
