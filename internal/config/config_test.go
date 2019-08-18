@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/ryantking/rudder/internal/kubes"
-	"github.com/ryantking/rudder/internal/testutil"
+	"github.com/cogolabs/rudder/internal/kubes"
+	"github.com/cogolabs/rudder/internal/testutil"
 	"github.com/stretchr/testify/suite"
 	"gopkg.in/yaml.v2"
 )

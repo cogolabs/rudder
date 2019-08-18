@@ -7,7 +7,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ryantking/rudder/internal/kubes"
+	"github.com/cogolabs/rudder/internal/kubes"
 	"gopkg.in/yaml.v2"
 )
 

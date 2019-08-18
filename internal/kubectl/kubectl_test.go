@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ryantking/rudder/internal/config"
+	"github.com/cogolabs/rudder/internal/config"
 	"github.com/stretchr/testify/suite"
 	"gopkg.in/h2non/gock.v1"
 )

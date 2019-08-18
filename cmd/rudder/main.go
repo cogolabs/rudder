@@ -8,9 +8,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/ryantking/rudder/internal/config"
-	"github.com/ryantking/rudder/internal/docker"
-	"github.com/ryantking/rudder/internal/kubectl"
+	"github.com/cogolabs/rudder/internal/config"
+	"github.com/cogolabs/rudder/internal/docker"
+	"github.com/cogolabs/rudder/internal/kubectl"
 )
 
 const (

@@ -1,4 +1,4 @@
-module github.com/ryantking/rudder
+module github.com/cogolabs/rudder
 
 go 1.12
 

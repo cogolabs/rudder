@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/ryantking/rudder/internal/config"
+	"github.com/cogolabs/rudder/internal/config"
 )
 
 // WaitForRollouts waits for a given deployment to finish all its rollouts

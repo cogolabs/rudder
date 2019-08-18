@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ryantking/rudder/internal/config"
+	"github.com/cogolabs/rudder/internal/config"
 )
 
 var (
