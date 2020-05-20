@@ -16,16 +16,17 @@ builds:
     - CGO_ENABLED=0
     main: ./cmd/rudder/
     ldflags: -s -w -X main.version={{.Version}} -X main.commit={{.ShortCommit}} -X main.date={{.Date}}
-archive:
-  format: tar.gz
-  wrap_in_directory: true
-  format_overrides:
-    - goos: windows
-      format: zip
-  name_template: '{{ .Binary  }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}'
-  files:
-    - LICENSE
-    - README.md
+archives:
+  - id: multi
+    format: tar.gz
+    wrap_in_directory: true
+    format_overrides:
+      - goos: windows
+        format: zip
+    name_template: '{{ .Binary  }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}'
+    files:
+      - LICENSE
+      - README.md
 snapshot:
   name_template: "SNAPSHOT-{{ .Commit }}"
 checksum:
@@ -40,12 +41,13 @@ changelog:
     - 'README'
     - Merge pull request
     - Merge branch
-brew:
-  github:
-    owner: ryantking
-    name: homebrew-tap
-  folder: Formula
-  homepage: github.com/ryantking/rudder
-  description: Portable Kubernetes deployment tool
-  test: |
-    system "${bin}/rudder --version"
+brews:
+  -
+    github:
+      owner: ryantking
+      name: homebrew-tap
+    folder: Formula
+    homepage: github.com/ryantking/rudder
+    description: Portable Kubernetes deployment tool
+    test: |
+      system "${bin}/rudder --version"
